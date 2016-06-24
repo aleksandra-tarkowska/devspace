@@ -38,17 +38,14 @@ WORKDIR /tmp/omero-install/linux
 
 RUN JAVAVER=$JAVAVER ICEVER=$ICEVER PGVER=nopg bash install_centos7_nginx.sh
 
-# install sphinx
-RUN pip install sphinx
-
 # install postgres tools
 RUN yum -y install http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-2.noarch.rpm \
     && yum clean all
 RUN yum -y install postgresql94 \
     && yum clean all
 
-EXPOSE 14064
-EXPOSE 14063
+EXPOSE 4064
+EXPOSE 4063
 
 ADD ./run.sh /tmp/run.sh
 RUN chown omero:omero /tmp/run.sh
@@ -58,6 +55,8 @@ RUN chmod a+x /tmp/run.sh
 # Change user id to fix permissions issues
 ARG USER_ID=1000
 RUN usermod -u $USER_ID omero
+
+VOLUME ["/home/omero"]
 
 USER omero
 CMD ["/tmp/run.sh"]

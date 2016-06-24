@@ -27,13 +27,6 @@ The following prerequisites are required for deploying a Jenkins devspace:
 
         git checkout -b MYTOPIC && git commit -a -m "Start MYTOPIC branch"
 
- *  Configure the .ssh and .gitconfig files in the slave directory, e.g.:
-
-        cp ~/.gitconfig slave/
-        cp ~/.ssh/id_rsa slave/.ssh
-        cp ~/.ssh/id_rsa.pub slave/.ssh
-        ssh-keyscan github.com >> slave/.ssh/known_hosts
-
  *  **If not using docker-machine**, you will need to fix the user ID
     for jenkins and slave!
 
@@ -41,10 +34,10 @@ The following prerequisites are required for deploying a Jenkins devspace:
     you have to add the following manually to each systemd based container,
     for example (where 1234 is your user ID):
 
-        diff --git a/web/Dockerfile b/web/Dockerfile
+        diff --git a/docker/web/Dockerfile b/docker/web/Dockerfile
         index f86703e..11bdc04 100644
-        --- a/web/Dockerfile
-        +++ b/web/Dockerfile
+        --- a/docker/web/Dockerfile
+        +++ b/docker/web/Dockerfile
         @@ -51,7 +51,7 @@ RUN chmod a+x /tmp/run.sh
 
 
@@ -67,6 +60,15 @@ The following prerequisites are required for deploying a Jenkins devspace:
         EXTRA=docker-compose.osx.yml ./ds up      # Ctrl-C to stop or
         EXTRA=docker-compose.osx.yml ./ds up -d   # To disconnect
 
+ *  Configure the .ssh and .gitconfig files in the slave directory, e.g.:
+
+        cp ~/.gitconfig testintegration/
+        cp ~/.ssh/id_rsa services/testintegration/.ssh
+        cp ~/.ssh/id_rsa.pub services/testintegration/.ssh
+        ssh-keyscan github.com >> services/testintegration/.ssh/known_hosts
+
+    make sure files in .ssh has correct permissions
+
  * Check that the containers are running:
 
         docker ps
@@ -74,6 +76,66 @@ The following prerequisites are required for deploying a Jenkins devspace:
  *  Configure artifactory:
     - Add an artifactory user (optional)
     - Under "System Configuration" add your artifactory URL
+
+
+## Multiply containers
+
+ *  common-services.yml contains default list of basic contaners are suitable to extend:
+    You can extend any service together with other configuration keys. For more details
+    read https://docs.docker.com/v1.6/compose/extends/
+
+ * to override the basic containers keep in mind compose copies configurations from the
+   original service over to the local one, except for links and volumes_from.
+
+   Examples of how to extend existing containers.
+
+    - baseomero: basic container starting OMERO.server process
+
+            myomero:
+                extends:
+                    file: common-services.yml
+                    service: baseserver
+                links:
+                    - jenkins
+                    - pg
+                volumes:
+                    - ./myservices/omero:/home/omero
+                environment:
+                    - SLAVE_NAME=myomero
+
+    - baseweb: basic container starting OMERO.web process
+
+            myweb:
+                extends:
+                    file: common-services.yml
+                    service: baseweb
+                links:
+                    - jenkins
+                    - redis
+                    - myomero
+                volumes:
+                    - ./myservices/web:/home/omero
+                    - ./myservices/nginx/conf.d:/home/omero/nginx
+                environment:
+                    - SLAVE_NAME=myweb
+
+    - basenginx: basic container starting nginx process
+
+            mynginx:
+                extends:
+                    file: common-services.yml
+                    service: basenginx
+                links:
+                    - jenkins
+                    - myweb
+                volumes:
+                    - ./myservices/nginx/conf.d:/etc/nginx/conf.d
+                    - ./myservices/web/static:/home/omero/static
+                environment:
+                    - SLAVE_NAME=mynginx
+
+    NOTE: you have to create manually all new volume directories to avoid 
+    automatic creation as root
 
 ## Service script
 

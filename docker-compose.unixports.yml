@@ -1,5 +1,7 @@
 jenkins:
     user: ${USER_ID}
+    ports:
+        - "443:8443"
 
 testintegration:
     ports:
