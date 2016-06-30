@@ -17,7 +17,7 @@ pg:
 
 testintegration:
     extends:
-        file: common-services.yml
+        file: common-services-v1.yml
         service: baseslave
     links:
         - jenkins
@@ -33,7 +33,7 @@ testintegration:
 
 omero:
     extends:
-        file: common-services.yml
+        file: common-services-v1.yml
         service: baseserver
     links:
         - jenkins
@@ -46,7 +46,7 @@ omero:
 
 web:
     extends:
-        file: common-services.yml
+        file: common-services-v1.yml
         service: baseweb
     links:
         - jenkins
@@ -62,7 +62,7 @@ web:
 
 nginx:
     extends:
-        file: common-services.yml
+        file: common-services-v1.yml
         service: basenginx
     links:
         - jenkins

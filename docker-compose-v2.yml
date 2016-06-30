@@ -1,0 +1,133 @@
+version: '2'
+services:
+
+    jenkins:
+        build:
+            context: ./jenkins
+            dockerfile: Dockerfile
+        user: ${USER_ID}
+        volumes:
+            - ./home:/var/jenkins_home
+
+
+    git:
+        build:
+            context: ./git
+            dockerfile: Dockerfile
+        volumes:
+            - /src
+        command: 'true'
+
+    pg:
+        image: postgres
+        volumes:
+            - ./pgdata:/var/lib/postgresql/data
+
+    testintegration:
+        extends:
+            file: common-services-v1.yml
+            service: baseslave
+        links:
+            - jenkins
+            - pg
+            - seleniumhub
+        volumes:
+            - ./slave:/home/omero
+        environment:
+            - SLAVE_NAME=testintegration
+            - SLAVE_PARAMS=-labels centos7 -labels ice36 -labels java18 -disableClientsUniqueId
+            - JENKINS_MASTER=http://jenkins:8080
+        extra_hosts:
+            - "testintegration:127.0.0.1"
+
+
+    omero:
+        extends:
+            file: common-services-v1.yml
+            service: baseserver
+        links:
+            - jenkins
+            - pg
+        volumes:
+            - ./server:/home/omero
+        environment:
+            - SLAVE_NAME=omero
+            - SLAVE_PARAMS=-labels centos7 -labels ice36 -labels java18 -disableClientsUniqueId
+            - JENKINS_MASTER=http://jenkins:8080
+
+
+    web:
+        extends:
+            file: common-services-v1.yml
+            service: baseweb
+        links:
+            - jenkins
+            - redis
+            - omero
+            - testintegration
+        volumes:
+            - ./web:/home/omero
+            - ./nginx/conf.d:/home/omero/nginx
+        environment:
+            - SLAVE_NAME=web
+            - SLAVE_PARAMS= -labels centos7 -labels ice36 -labels java18 -disableClientsUniqueId
+            - JENKINS_MASTER=http://jenkins:8080
+
+    nginx:
+        extends:
+            file: common-services-v1.yml
+            service: basenginx
+        links:
+            - jenkins
+            - web
+        volumes:
+            - ./nginx/conf.d:/etc/nginx/conf.d
+            - ./web/static:/home/omero/static
+            - ./nginx/log:/var/log/nginx
+            - ./nginx/sslcert:/etc/nginx/ssl
+        environment:
+            - SLAVE_NAME=nginx
+            - SLAVE_PARAMS=-labels centos7 -labels java18 -disableClientsUniqueId
+            - JENKINS_MASTER=http://jenkins:8080
+
+
+    nginxjenkins:
+        image: nginx:1.10
+        links:
+            - jenkins
+        volumes:
+            - ./jenkins/conf.d:/etc/nginx/conf.d
+            - ./jenkins/sslcert:/etc/nginx/ssl
+        environment:
+            - SLAVE_NAME=nginx
+            - SLAVE_PARAMS=-labels centos7 -disableClientsUniqueId
+            - JENKINS_MASTER=http://jenkins:8080
+
+
+    redis:
+        image: redis
+
+    seleniumhub:
+        image: selenium/hub
+        environment:
+            - "JAVA_OPTS: -d64 -Xmx512m -Djava.security.egd=file:/dev/./urandom"
+            - GRID_BROWSER_TIMEOUT=30000
+            - GRID_TIMEOUT=30000
+
+
+    seleniumfirefox:
+        image: selenium/node-firefox
+        links:
+            - seleniumhub:hub
+        environment:
+            - "JAVA_OPTS: -d64 -Xmx512m -Djava.security.egd=file:/dev/./urandom"
+    seleniumchrome:
+        image: selenium/node-chrome
+        links:
+            - seleniumhub:hub
+        environment:
+            - "JAVA_OPTS: -d64 -Xmx512m -Djava.security.egd=file:/dev/./urandom"
+
+networks:
+  default:
+    driver: bridge

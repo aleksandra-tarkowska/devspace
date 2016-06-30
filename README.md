@@ -27,30 +27,10 @@ The following prerequisites are required for deploying a Jenkins devspace:
 
         git checkout -b MYTOPIC && git commit -a -m "Start MYTOPIC branch"
 
- *  **If not using docker-machine**, you will need to fix the user ID
-    for jenkins and slave!
+ *  **There is no longer need to fix USER ID.**
+    Build arguments are now supported and can be adjusted in compose files.
 
-    devspace uses docker-compose V1 that do not support build arguments
-    you have to add the following manually to each systemd based container,
-    for example (where 1234 is your user ID):
-
-        diff --git a/web/Dockerfile b/web/Dockerfile
-        index f86703e..11bdc04 100644
-        --- a/web/Dockerfile
-        +++ b/web/Dockerfile
-        @@ -51,7 +51,7 @@ RUN chmod a+x /tmp/run.sh
-
-
-         # Change user id to fix permissions issues
-        -ARG USER_ID=1000
-        +ARG USER_ID=1234
-         RUN usermod -u $USER_ID omero
-
-    using sed command
-
-         sed -i 's/ARG USER_ID=1000/ARG USER_ID='"$UID"'/g' server/Dockerfile
-
-*  Configure the .ssh and .gitconfig files in the slave directory, e.g.:
+ *  Configure the .ssh and .gitconfig files in the slave directory, e.g.:
 
         cp ~/.gitconfig slave/
         cp ~/.ssh/id_rsa slave/.ssh
@@ -241,8 +221,10 @@ Default packages:
 
  *  Uprade to 0.2.1:
 
-    If you already created new containers based on existing Dockerfiles, you may wish to review
+    - services: if you already created new containers based on existing Dockerfiles, you may wish to review
     and extend common services
+
+    - build arguments: all build arguments are now supported.
 
  *  Uprade to 0.2.0:
 
