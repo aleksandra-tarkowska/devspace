@@ -22,7 +22,7 @@
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>SPACEBRANCH/merge/trigger</name>
+        <name>metadata52/merge/trigger</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -52,7 +52,7 @@
 
 export PATH=/opt/texlive/bin/x86_64-linux:$PATH # for dockerfile
 cd src
-export OMERO_BRANCH=SPACEBRANCH
+export OMERO_BRANCH=metadata52
 source docs/hudson/OMERO.sh
 </command>
     </hudson.tasks.Shell>

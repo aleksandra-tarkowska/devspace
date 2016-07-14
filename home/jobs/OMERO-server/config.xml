@@ -16,12 +16,21 @@
     <hudson.tasks.Shell>
       <command>OMERO_INSTALL=/tmp/omero-install/linux
 source $OMERO_INSTALL/settings.env
-OMERO_DB_NAME=$JOB_NAME
+OMERO_DB_NAME=&apos;idr-20160803&apos;
 OMERO_DIST=$WORKSPACE/OMERO.server
 
 $OMERO_DIST/bin/omero admin stop || echo First build
 sleep 5
-dropdb -h $OMERO_DB_HOST -U $OMERO_DB_USER $OMERO_DB_NAME || echo First run
+#dropdb -h $OMERO_DB_HOST -U $OMERO_DB_USER $OMERO_DB_NAME || echo First run
+
+# remove symlink
+if [ -L $WORKSPACE/data/Thumbnails ]; then
+    rm $WORKSPACE/data/Thumbnails
+fi
+if [ -L $WORKSPACE/data/FullText ]; then
+    rm $WORKSPACE/data/FullText
+fi
+
 
 rm -rf $WORKSPACE/*</command>
     </hudson.tasks.Shell>
@@ -37,10 +46,14 @@ rm -rf $WORKSPACE/*</command>
     <hudson.tasks.Shell>
       <command>OMERO_INSTALL=/tmp/omero-install/linux
 source $OMERO_INSTALL/settings.env
-OMERO_DB_NAME=$JOB_NAME
+OMERO_DB_NAME=&apos;idr-20160803&apos;
 OMERO_DATA_DIR=$WORKSPACE/data
 
 mkdir -p $OMERO_DATA_DIR
+
+# copy thumbnails
+ln -s $HOME/Thumbnails/ $WORKSPACE/data/Thumbnails
+ln -s $HOME/FullText/ $WORKSPACE/data/FullText
 
 # UNZIP SERVER
 OMERO_DIST=$WORKSPACE/OMERO.server
@@ -56,6 +69,11 @@ mv $WORKSPACE/$DIST $OMERO_DIST
 
 # LOAD EXTRA CONFIG
 #$OMERO_DIST/bin/omero load configfile.omero
+$OMERO_DIST/bin/omero config set omero.client.ui.menu.dropdown.colleagues.enabled false
+$OMERO_DIST/bin/omero config set omero.client.ui.menu.dropdown.everyone.label &apos;Demo data&apos;
+$OMERO_DIST/bin/omero config set omero.client.ui.tree.type_order false
+$OMERO_DIST/bin/omero config set omero.client.ui.tree.orphans.enabled false
+
 
 # DEFAULT CONFIG
 $OMERO_DIST/bin/omero config set omero.db.name $OMERO_DB_NAME
@@ -69,10 +87,10 @@ $OMERO_DIST/bin/omero config set omero.data.dir $OMERO_DATA_DIR
 ## PURGE
 
 # CREATE DB
-createdb -h $OMERO_DB_HOST -U $OMERO_DB_USER $OMERO_DB_NAME
-$OMERO_DIST/bin/omero db script -f dbsetup.sql &quot;&quot; &quot;&quot; $OMERO_ROOT_PASS
-psql -h $OMERO_DB_HOST -U $OMERO_DB_USER -d $OMERO_DB_NAME -f dbsetup.sql
-rm dbsetup.sql
+#createdb -h $OMERO_DB_HOST -U $OMERO_DB_USER $OMERO_DB_NAME
+#$OMERO_DIST/bin/omero db script -f dbsetup.sql &quot;&quot; &quot;&quot; $OMERO_ROOT_PASS
+#psql -h $OMERO_DB_HOST -U $OMERO_DB_USER -d $OMERO_DB_NAME -f dbsetup.sql
+#rm dbsetup.sql
 
 ## END PURGE
 

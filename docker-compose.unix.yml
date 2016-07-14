@@ -1,18 +1,18 @@
 jenkins:
     environment:
-        - SERVICE_NAME=SPACENAME-ci
+        - SERVICE_NAME=metadata52-ci
 
 testintegration:
     environment:
-        - SERVICE_NAME=SPACENAME-testintegration
+        - SERVICE_NAME=metadata52-testintegration
 omero:
     environment:
-        - SERVICE_NAME=SPACENAME-omero
+        - SERVICE_NAME=metadata52-omero
 
 nginx:
     environment:
-        - SERVICE_NAME=SPACENAME-nginx
+        - SERVICE_NAME=metadata52-nginx
 
 nginxjenkins:
     environment:
-        - SERVICE_NAME=SPACENAME-nginxjenkins
+        - SERVICE_NAME=metadata52-nginxjenkins

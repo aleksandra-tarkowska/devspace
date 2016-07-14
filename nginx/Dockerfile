@@ -26,7 +26,7 @@ RUN chmod a+x /tmp/run.sh
 RUN chmod a+x /home/omero
 
 # Change user id to fix permissions issues
-ARG USER_ID=1000
+ARG USER_ID=1001
 RUN usermod -u $USER_ID omero
 
 USER omero

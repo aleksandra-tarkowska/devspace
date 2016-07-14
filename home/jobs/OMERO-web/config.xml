@@ -19,9 +19,9 @@ OMERO_DIST=$WORKSPACE/OMERO.web
 if [ -e $OMERO_DIST ]; then
     if [ -e $WORKSPACE/omero-virtualenv ]; then
         source $WORKSPACE/omero-virtualenv/bin/activate
-        $OMERO_DIST/bin/omero web stop || echo 'not running'
+        $OMERO_DIST/bin/omero web stop || echo &apos;not running&apos;
         sleep 5
-        $OMERO_DIST/bin/omero web status || echo 'no status'
+        $OMERO_DIST/bin/omero web status || echo &apos;no status&apos;
         deactivate
     fi
 fi
@@ -57,10 +57,32 @@ source $OMERO_INSTALL/settings.env
 
 pip install -r $OMERO_DIST/share/web/requirements-py27-nginx.txt
 pip install &quot;django-redis-cache&gt;=1.6.5&quot;
+pip install gevent
 
-if [ $ICEVERSION = "noice" ]; then
+if [ $ICEVERSION = &quot;noice&quot; ]; then
     pip install &quot;zeroc-ice&gt;3.5,&lt;3.7&quot;
 fi
+
+pip install &apos;git+git://github.com/aleksandra-tarkowska/mapannotations.git&apos;
+
+
+# custom config
+
+$OMERO_DIST/bin/omero config set omero.web.wsgi_worker_class gevent
+$OMERO_DIST/bin/omero config set omero.web.wsgi_worker_connections 1000
+$OMERO_DIST/bin/omero config set omero.web.application_server.max_requests 0
+$OMERO_DIST/bin/omero config set omero.web.wsgi_workers 10
+$OMERO_DIST/bin/omero config set -- omero.web.wsgi_args &apos;--backlog 2048&apos;
+
+
+
+$OMERO_DIST/bin/omero config set omero.web.public.enabled true
+$OMERO_DIST/bin/omero config set omero.web.public.user &apos;public&apos;
+$OMERO_DIST/bin/omero config set omero.web.public.password &apos;ome&apos;
+$OMERO_DIST/bin/omero config set omero.web.public.server_id 1
+$OMERO_DIST/bin/omero config set omero.web.public.url_filter &apos;^/(?!webadmin|webclient/logout)&apos;
+$OMERO_DIST/bin/omero config set omero.web.ui.top_links &apos;[[&quot;IDR&quot;, {&quot;viewname&quot;: &quot;webindex&quot;, &quot;query_string&quot;: {&quot;experimenter&quot;: -1}}, {&quot;title&quot;: &quot;Image Data Repository&quot;}], [&quot;Genes&quot;, {&quot;viewname&quot;: &quot;maprindex_gene&quot;, &quot;query_string&quot;: {&quot;experimenter&quot;: -1}}, {&quot;title&quot;: &quot;Genes browser&quot;}], [&quot;Phenotypes&quot;, {&quot;viewname&quot;: &quot;maprindex_phenotype&quot;, &quot;query_string&quot;: {&quot;experimenter&quot;: -1}}, {&quot;title&quot;: &quot;Phenotypes browser&quot;}], [&quot;siRNA&quot;, {&quot;viewname&quot;: &quot;maprindex_sirna&quot;, &quot;query_string&quot;: {&quot;experimenter&quot;: -1}}, {&quot;title&quot;: &quot;siRNA browser&quot;}], [&quot;Compound&quot;, {&quot;viewname&quot;: &quot;maprindex_compound&quot;, &quot;query_string&quot;: {&quot;experimenter&quot;: -1}}, {&quot;title&quot;: &quot;Compound browser&quot;}], [&quot;History&quot;, &quot;history&quot;, {&quot;title&quot;: &quot;History&quot;}], [&quot;About&quot;, &quot;/about/&quot;], [&quot;Help&quot;, &quot;http://help.openmicroscopy.org/&quot;, {&quot;title&quot;:&quot;Open OMERO user guide in a new tab&quot;, &quot;target&quot;:&quot;new&quot;}]]&apos;
+$OMERO_DIST/bin/omero config append omero.web.apps &apos;&quot;mapr&quot;&apos;
 
 #start-config
 $OMERO_DIST/bin/omero config set omero.web.application_server &apos;wsgi-tcp&apos;
@@ -78,7 +100,7 @@ $OMERO_DIST/bin/omero config set omero.web.server_list &apos;[[&quot;omero&quot;
 $OMERO_DIST/bin/omero config set omero.web.application_server.host web
 $OMERO_DIST/bin/omero config set omero.web.application_server.port 4080
 
-$OMERO_DIST/bin/omero web config nginx --http &quot;$OMERO_WEB_PORT&quot; &gt;$OMERO_DIST/nginx.conf.tmp
+$OMERO_DIST/bin/omero web config nginx --servername &quot;10.0.51.133&quot; --http &quot;$OMERO_WEB_PORT&quot; &gt;$OMERO_DIST/nginx.conf.tmp
 
 sudo cp $OMERO_DIST/nginx.conf.tmp $HOME/nginx/$NODE_NAME.conf
 
