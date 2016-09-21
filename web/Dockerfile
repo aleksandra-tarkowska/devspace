@@ -57,5 +57,11 @@ RUN chmod a+x /tmp/run.sh
 ARG USER_ID=1000
 RUN usermod -u $USER_ID omero
 
+# make sure mounted volumes has correct permissions
+RUN mkdir -p /home/omero/ngin
+RUN chown -R omero:omero /home/omero/ngin
+
+VOLUME ['/home/omero', '/home/omero/nginx']
+
 USER omero
 CMD ["/tmp/run.sh"]
