@@ -1,6 +1,17 @@
 FROM jenkins:2.32.2
 MAINTAINER OME
 
+
+USER root
+RUN apt-get update \
+      && apt-get install -y sudo \
+      && rm -rf /var/lib/apt/lists/*
+RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
+
+RUN gpasswd -a jenkins docker
+
+USER jenkins
+
 # Temp fix robot test results
 ENV JAVA_OPTS "-Dhudson.model.DirectoryBrowserSupport.CSP="
 
