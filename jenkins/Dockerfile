@@ -8,8 +8,6 @@ RUN apt-get update \
       && rm -rf /var/lib/apt/lists/*
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 
-RUN gpasswd -a jenkins docker
-
 USER jenkins
 
 # Temp fix robot test results
