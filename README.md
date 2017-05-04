@@ -46,9 +46,9 @@ Install following prerequesits:
 
 *   Set enviroment variables in `.env`
 
-        USER_ID=1234
         JENKINS_USERNAME=devspace
         JENKINS_PASSWORD=secret
+
 
 *   Start devspace
 
@@ -263,7 +263,9 @@ Then fetch custom omero-install branch by updating each Dockerfile
 
     - It is possible to extend services using ansible playbook. If you already created new containers based on existing Dockerfiles, you may wish to review your customization and extend common services
 
- *  Upgrade to 0.2.0:
+    - build arguments: all build arguments are now supported.
+
+ *  Uprade to 0.2.0:
 
     If you made custom adjustments to the code and committed them, it is recommended to reset changes.
 
