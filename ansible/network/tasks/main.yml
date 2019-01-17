@@ -1,0 +1,25 @@
+---
+
+- name: Create the network
+  os_network:
+    state: present
+    name: "{{ network_name }}"
+
+- name: Create the subnet
+  os_subnet:
+    state: present
+    name: "{{ subnet_name }}"
+    network_name: "{{ network_name }}"
+    cidr: "{{ network_subnet }}"
+    gateway_ip: "{{ network_gateway }}"
+    dns_nameservers: "{{ network_dns }}"
+    ip_version: 4
+    enable_dhcp: yes
+
+- name: Create the router
+  os_router:
+    state: present
+    name: "{{ router_name }}"
+    network: public
+    interfaces:
+      - "{{ subnet_name }}"

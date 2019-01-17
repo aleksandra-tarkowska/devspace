@@ -1,0 +1,57 @@
+---
+
+- name: Create a new security group
+  os_security_group:
+    description: External access to servers (managed by Ansible)
+    name: "{{ security_group_name }}"
+    state: present
+
+- name: Create a new security groups for ports
+  os_security_group_rule:
+    security_group: "{{ security_group_name }}"
+    direction: ingress
+    port_range_max: "{{ item }}"
+    port_range_min: "{{ item }}"
+    protocol: tcp
+    remote_ip_prefix: 0.0.0.0/0
+    state: present
+  with_items:
+    "{{ security_ports }}"
+
+- name: Create new instance
+  os_server:
+    name: "{{ vm_name }}"
+    state: present
+    image: "{{ vm_image }}"
+    boot_from_volume: True
+    volume_size: "{{ vm_size }}"
+    terminate_volume: true
+    key_name: "{{ key_name }}"
+    flavor_ram: "{{ vm_flavour_ram }}"
+    auto_ip: yes
+    nics:
+      - net-name: "{{ network_name }}"
+    meta:
+      hostname: "{{ prefix }}"
+      groups: "{{ vm_groups }}"
+    security_groups: [default, "{{ security_group_name }}"]
+  register: vm_public
+
+- debug:
+    msg: "{{ vm_public.server.name }} ({{ vm_public.server.id }}) IPs private:{{ vm_public.openstack.private_v4 }} floating:{{ vm_public.openstack.public_v4 | default('') }}"
+
+- name: Wait for SSH on the Instance
+  command: >
+    ssh -oBatchMode=yes -oStrictHostKeyChecking=no
+    centos@{{ vm_public.server.public_v4 }} true
+  register: result
+  until: result is success
+  retries: 30
+  delay: 10
+
+- name: Add new instance to the inventory
+  add_host:
+    name: "{{ vm_public.server.name }}"
+    groups: "{{ vm_group_name }}-hosts"
+    ansible_user: "{{ ansible_user }}"
+    ansible_ssh_host: "{{ vm_public.server.public_v4 }}"

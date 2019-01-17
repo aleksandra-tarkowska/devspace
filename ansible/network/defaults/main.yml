@@ -1,0 +1,9 @@
+---
+# defaults for network
+
+network_name: test_network
+subnet_name: test_subnet
+router_name: test_router
+network_subnet: 192.168.1.0/24
+network_dns: [8.8.8.8]
+network_gateway: 192.168.1.1

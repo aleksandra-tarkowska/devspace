@@ -1,0 +1,10 @@
+---
+# defaults for network
+
+security_group_name: test-external
+security_ports: [22, 80, 443, 4063, 4064, 8443]
+vm_image: "Centos 7"
+vm_groups: "ansible-managed,os-image-centos"
+vm_flavour_ram: 16000
+vm_size: 100
+ansible_user: centos
