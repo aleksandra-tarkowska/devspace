@@ -11,7 +11,6 @@
 
   vars:
     network_name: "{{ prefix }}_network"
-    vm_count: 2
 
   pre_tasks:
 
@@ -45,14 +44,16 @@
       include_role:
         name: "create_vm"
       vars:
+        key_name: "{{ key_name }}"
         vm_name: "{{ prefix }}_master"
         vm_image: "Centos 7"
         vm_groups: "ansible-managed,os-image-centos"
-        vm_flavour_ram: 16000
+        vm_flavour_ram: 32000
         vm_size: 100
         vm_group_name: "{{ prefix }}-master"
         security_group_name: "{{ prefix }}-external"
         ansible_user: centos
+
 
 - hosts: "{{ prefix }}-master-hosts"
 
@@ -87,3 +88,9 @@
       devspace_git_update: yes
       devspace_git_force: yes
       git_user: "olatarkowska"
+      devspace_git_repo: "https://github.com/olatarkowska/devspace.git"
+      devspace_git_repo_version: "master"
+      omero_server_ssl: 4064
+      omero_server_tcp: 4063
+      nginx_port: 80
+      nginx_ssl_port: 443

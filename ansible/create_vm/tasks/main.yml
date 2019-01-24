@@ -25,14 +25,14 @@
     image: "{{ vm_image }}"
     boot_from_volume: True
     volume_size: "{{ vm_size }}"
-    terminate_volume: true
+    terminate_volume: True
     key_name: "{{ key_name }}"
     flavor_ram: "{{ vm_flavour_ram }}"
     auto_ip: yes
     nics:
       - net-name: "{{ network_name }}"
     meta:
-      hostname: "{{ prefix }}"
+      hostname: "{{ vm_name }}"
       groups: "{{ vm_groups }}"
     security_groups: [default, "{{ security_group_name }}"]
   register: vm_public
