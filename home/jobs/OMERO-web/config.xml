@@ -60,6 +60,9 @@ source $OMERO_INSTALL/settings.env
 
 pip install -r $OMERO_DIST/share/web/requirements-py27.txt
 
+pip install &quot;git+git://github.com/cellgeni/OMERO.wsi@master#egg=wsi&quot;
+$OMERO_DIST/bin/omero config append omero.web.apps &apos;&quot;wsi&quot;&apos;
+
 #start-config
 $OMERO_DIST/bin/omero config set omero.web.application_server &apos;wsgi-tcp&apos;
 $OMERO_DIST/bin/omero config set omero.web.application_server.max_requests 0
