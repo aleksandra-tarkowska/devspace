@@ -77,7 +77,7 @@
 
     - role: openmicroscopy.devspace
       # Path to SSH and Git configuration files e.g. ~/devspace_training
-      configuration_dir_path: "/Users/at22/INFRA/devspace.git/ansible/"
+      configuration_dir_path: "./"
       # The name of the git branch all the jobs will be using. The default is develop
       # devspace_omero_branch: develop
       # The devspace repository to use. The default is https://github.com/openmicroscopy/devspace.git
