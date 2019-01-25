@@ -64,8 +64,8 @@ services:
             - JENKINS_MASTER=${JENKINS_BASE}${JENKINS_PREFIX}
             - WEBHOST=http://nginx${WEB_PREFIX}
         ports:
-            - "${OMERO_SERVER_SSL}:4064"
-            - "${OMERO_SERVER_TCP}:4063"
+            - "4064:4064"
+            - "4063:4063"
 
     web:
         build:
@@ -99,8 +99,7 @@ services:
             - SLAVE_PARAMS=-labels centos7 -labels java18 -disableClientsUniqueId
             - JENKINS_MASTER=${JENKINS_BASE}${JENKINS_PREFIX}
         ports:
-            - "${NGINX_PORT}:80"
-            - "${NGINX_SSL_PORT}:443"
+            - "80:80"
 
     redis:
         image: redis
@@ -142,20 +141,6 @@ services:
         depends_on:
             - seleniumhub
 
-    docker:
-        build: docker
-        networks:
-            - omero-network
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            - ${REPO_CURATED}:${REPO_CURATED}:ro
-            - ${REPO_CONFIG}:${REPO_CONFIG}:ro
-        environment:
-            - SLAVE_NAME=docker
-            - SLAVE_PARAMS=-labels docker -disableClientsUniqueId -executors ${DOCKER_EXECUTORS}
-            - JENKINS_MASTER=${JENKINS_BASE}${JENKINS_PREFIX}
-            - REPO_CURATED
-            - REPO_CONFIG
 
 networks:
     omero-network:
