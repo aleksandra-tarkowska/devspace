@@ -11,8 +11,6 @@ services:
             - ./home:/var/jenkins_home
         environment:
             - JENKINS_OPTS= --prefix=${JENKINS_PREFIX} --argumentsRealm.passwd.${JENKINS_USERNAME}=${JENKINS_PASSWORD} --argumentsRealm.roles.${JENKINS_USERNAME}=admin
-        ports:
-            - "8080:8080"
 
     git:
         build: git
@@ -100,6 +98,16 @@ services:
             - JENKINS_MASTER=${JENKINS_BASE}${JENKINS_PREFIX}
         ports:
             - "80:80"
+
+    nginxjenkins:
+        image: nginx:1.10
+        networks:
+            - omero-network
+        volumes:
+            - ./jenkins/conf.d:/etc/nginx/conf.d
+            - ./jenkins/sslcert:/etc/nginx/ssl
+        ports:
+			- "443:443"
 
     redis:
         image: redis
