@@ -14,7 +14,7 @@
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
     <script>
-//build job: &apos;BIOFORMATS-push&apos;
+build job: &apos;BIOFORMATS-push&apos;
 
 build job: &apos;BIOFORMATS-build&apos;
 
@@ -24,7 +24,7 @@ build job: &apos;BIOFORMATS-image&apos;
 
 build job: &apos;BIOFORMATS-test-repo&apos;, wait: false
 
-//build job: &apos;OMERO-push&apos;
+build job: &apos;OMERO-push&apos;
 
 build job: &apos;OMERO-build&apos;
 
