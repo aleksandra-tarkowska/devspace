@@ -1,5 +1,5 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<flow-definition plugin="workflow-job@2.11.1">
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.29">
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
@@ -12,7 +12,7 @@
       </triggers>
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
-  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36.1">
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.61">
     <script>
 build job: &apos;BIOFORMATS-push&apos;
 
@@ -43,4 +43,5 @@ build job: &apos;OMERO-docs&apos;, wait: false
 </script>
     <sandbox>true</sandbox>
   </definition>
+  <disabled>false</disabled>
 </flow-definition>

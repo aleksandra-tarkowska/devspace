@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.1' encoding='UTF-8'?>
 <project>
   <actions/>
   <description></description>
@@ -41,7 +41,7 @@
     <hudson.tasks.Shell>
       <command>rm -rf src</command>
     </hudson.tasks.Shell>
-    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.38.1">
+    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.41">
       <project>OMERO-build</project>
       <filter>src/target/openmicroscopy*zip</filter>
       <target></target>
@@ -50,7 +50,7 @@
       <flatten>true</flatten>
       <doNotFingerprintArtifacts>false</doNotFingerprintArtifacts>
     </hudson.plugins.copyartifact.CopyArtifact>
-    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.38.1">
+    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.41">
       <project>OMERO-build</project>
       <filter>src/target/OMERO.server*zip</filter>
       <target></target>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.1' encoding='UTF-8'?>
 <project>
   <actions/>
   <description></description>
@@ -9,7 +9,7 @@
         <hudson.model.BooleanParameterDefinition>
           <name>PURGE_DATA</name>
           <description>Drops and creates the DB, cleans the binary repository</description>
-          <defaultValue>true</defaultValue>
+          <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>DB_NAME</name>
@@ -61,7 +61,7 @@ fi
 
 rm -rf $WORKSPACE/*</command>
     </hudson.tasks.Shell>
-    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.38.1">
+    <hudson.plugins.copyartifact.CopyArtifact plugin="copyartifact@1.41">
       <project>OMERO-build</project>
       <filter>src/target/OMERO.server*zip</filter>
       <target></target>
@@ -130,6 +130,6 @@ deactivate</command>
   </builders>
   <publishers/>
   <buildWrappers>
-    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.8.8"/>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.8.10"/>
   </buildWrappers>
 </project>
