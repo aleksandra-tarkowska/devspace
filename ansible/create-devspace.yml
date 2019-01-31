@@ -88,7 +88,7 @@
       devspace_git_update: yes
       devspace_git_force: yes
       git_user: "olatarkowska"
-      devspace_omero_branch: master
+      devspace_omero_branch: "develop"
       devspace_git_repo: "https://github.com/olatarkowska/devspace.git"
       devspace_git_repo_version: "master"
       omero_server_ssl: 4064
