@@ -20,10 +20,6 @@ build job: &apos;BIOFORMATS-build&apos;
 
 build job: &apos;BIOFORMATS-docs&apos;, propagate: false
 
-build job: &apos;BIOFORMATS-image&apos;
-
-build job: &apos;BIOFORMATS-test-repo&apos;, wait: false
-
 build job: &apos;OMERO-push&apos;
 
 build job: &apos;OMERO-build&apos;
