@@ -46,8 +46,8 @@ services:
         extra_hosts:
             - "testintegration:127.0.0.1"
         ports:
-            - "14064"
-            - "14063"
+            - "14064:14064"
+            - "14063:14064"
 
     omero:
         build:
